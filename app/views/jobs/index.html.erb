@@ -1,0 +1,93 @@
+<section class="hero">
+  <div>
+    <p class="eyebrow">JOB APPLICATION TRACKER</p>
+    <h1>Stay on top of every opportunity.</h1>
+    <p class="hero-copy">
+      Track applications, interviews, offers and everything in between.
+    </p>
+  </div>
+
+  <%= link_to "+ Add application", new_job_path, class: "button" %>
+</section>
+
+<section class="stats-grid">
+  <div class="stat-card">
+    <span>Total applications</span>
+    <strong><%= @jobs.count %></strong>
+  </div>
+
+  <div class="stat-card">
+    <span>Applied</span>
+    <strong><%= @jobs.count { |job| job.status == "Applied" } %></strong>
+  </div>
+
+  <div class="stat-card">
+    <span>Interviews</span>
+    <strong><%= @jobs.count { |job| job.status == "Interview" } %></strong>
+  </div>
+
+  <div class="stat-card">
+    <span>Offers</span>
+    <strong><%= @jobs.count { |job| job.status == "Offer" } %></strong>
+  </div>
+</section>
+
+<section class="applications-section">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">PIPELINE</p>
+      <h2>Your applications</h2>
+    </div>
+
+    <span><%= pluralize(@jobs.count, "application") %></span>
+  </div>
+
+  <% if @jobs.any? %>
+    <div class="job-list">
+      <% @jobs.each do |job| %>
+        <%= link_to job_path(job), class: "job-card" do %>
+
+          <div class="job-main">
+            <div class="company-avatar">
+              <%= job.company.to_s.first&.upcase || "?" %>
+            </div>
+
+            <div>
+              <h3><%= job.title %></h3>
+              <p><%= job.company %></p>
+
+              <div class="job-meta">
+                <% if job.location.present? %>
+                  <span><%= job.location %></span>
+                <% end %>
+
+                <% if job.salary.present? %>
+                  <span><%= job.salary %></span>
+                <% end %>
+
+                <% if job.applied_on.present? %>
+                  <span>Applied <%= job.applied_on.strftime("%d %b %Y") %></span>
+                <% end %>
+              </div>
+            </div>
+          </div>
+
+          <span class="status status-<%= job.status.to_s.parameterize %>">
+            <%= job.status.presence || "Unknown" %>
+          </span>
+
+        <% end %>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="empty-state">
+      <h3>No applications yet</h3>
+
+      <p>
+        Add your first application and start building your pipeline.
+      </p>
+
+      <%= link_to "Add your first job", new_job_path, class: "button" %>
+    </div>
+  <% end %>
+</section>
